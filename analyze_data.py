@@ -26,6 +26,7 @@ def load_file():
     with open(file_name) as f:
         return json.load(f)
 
+
 #  .. Write final_output to json file
 def write_file():
     k = Counter(word_count)
@@ -33,6 +34,7 @@ def write_file():
     top_words = k.most_common(top_word_limit)
     with open('final_output.json', 'w') as f:
         json.dump(top_words, f)
+
 
 #  .. Loop through each tweet obj and perform analysis
 def extract_info():
@@ -52,6 +54,11 @@ def handle_text(text):
             word_count[word] += 1
 
 
-data = load_file()
-extract_info()
-write_file()
+def run():
+    data = load_file()
+    extract_info()
+    write_file()
+
+
+if __name__ == '__main__':
+    run()
