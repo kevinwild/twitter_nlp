@@ -1,63 +1,52 @@
 import json
 import nltk
-import operator
+import settings
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from collections import Counter
 
-# --- NLTK --
+# --- NLTK -- Update || Download --
 nltk.download('stopwords')
 nltk.download('punkt')
-stop_words = set(stopwords.words("english"))  # __ Declare stop words
-stop_punc = ['@', ':', 'http', 'https', '.', '!', '#', '%', ',', '?', '>', '<', '-', '&', ';']
-
-# --- Configs ---
-file_name = 'test.json'
-top_word_limit = 50
-# -- Global Vars ---
-final_output = []
-word_count = {}
-top_words = 0
 
 
-#  .. Load & return json file
-def load_file():
-    # Load json file
-    with open(file_name) as f:
-        return json.load(f)
+class AnalyzeData:
+    def __init__(self):
+        self.file = None
+        self.report = None
+        self.stop_words = set(stopwords.words("english"))
+        self.stop_punc = ['@', ':', 'http', 'https', '.', '!', '#', '%', ',', '?', '>', '<', '-', '&', ';']
+        self.word_count = {}
 
+    #  .. orchestrate report actions
+    def generate_report(self):
+        # ..Loop through each tweet
+        for tweet in self.file:
+            # .. Tokenize tweet for evaluation
+            tokenized_text = self.tokenize(tweet['text'])
 
-#  .. Write final_output to json file
-def write_file():
-    k = Counter(word_count)
-    # Finding n highest values
-    top_words = k.most_common(top_word_limit)
-    with open('final_output.json', 'w') as f:
-        json.dump(top_words, f)
+    #  .. Load & return json file
+    def load_file(self):
+        with open(settings.CONFIG.get('data_store_dir') + '/' + settings.CONFIG.get('raw_file_name')) as f:
+            self.file = json.load(f)
 
-
-#  .. Loop through each tweet obj and perform analysis
-def extract_info():
-    for i in data:
-        cleanText = handle_text(i['text'])
-
-
-def handle_text(text):
-    tokens = word_tokenize(text)
-    tokens = [w for w in tokens if not w in stop_words]  # __ remove stop words from text
-    for word in tokens:
-        if word in stop_punc:
-            continue
-        if word not in word_count:
-            word_count[word] = 1
-        else:
-            word_count[word] += 1
+    #  .. Create tokenized word obj and remove stop words also during tokenizing process add valid words to word_count
+    def tokenize(self, text):
+        tokens = word_tokenize(text)
+        tokens = [w for w in tokens if not w in self.stop_words]  # __ remove stop words from text
+        for word in tokens:
+            if word in self.stop_punc:
+                continue
+            if word not in self.word_count:
+                self.word_count[word] = 1
+            else:
+                self.word_count[word] += 1
 
 
 def run():
-    data = load_file()
-    extract_info()
-    write_file()
+    ad = AnalyzeData()
+    ad.load_file()
+    ad.generate_report()
 
 
 if __name__ == '__main__':
