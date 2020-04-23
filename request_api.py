@@ -43,8 +43,8 @@ class RequestApi:
 
     def write_file(self):
         save_path = settings.CONFIG.get('data_store_dir') + '/' + settings.CONFIG.get('raw_file_name')
-        with open(save_path, 'w') as f:
-            json.dump(self.insert_dict, f)
+        with open(save_path, 'w', encoding='utf-8') as f:
+            json.dump(self.insert_dict, f, ensure_ascii=False)
 
 
 def run():
