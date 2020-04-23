@@ -48,6 +48,7 @@ class RequestApi:
 
 
 def run():
+    print('Gathering tweets from Twitter API')
     api_obj = RequestApi()
     for param in settings.CONFIG.get('query_params'):
         response = api_obj.make_request(param)
