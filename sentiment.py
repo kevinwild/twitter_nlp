@@ -14,6 +14,8 @@ from nltk.tokenize import word_tokenize
 from nltk import FreqDist, classify, NaiveBayesClassifier
 import re, string, random
 import sys
+from nltk.metrics.scores import accuracy
+from pprint import pprint
 
 
 class Sentiment:
@@ -39,13 +41,13 @@ class Sentiment:
         self.freq_dist_pos = FreqDist(all_pos_words)
         print('10 most Popular words: ')
         print(self.freq_dist_pos.most_common(10))
-        positive_tokens_for_model = get_tweets_for_model(self.clean_positive)
-        negative_tokens_for_model = get_tweets_for_model(self.clean_negative)
+        p_token_model = shape_tweets(self.clean_positive)
+        n_token_model = shape_tweets(self.clean_negative)
         positive_dataset = [(tweet_dict, "Positive")
-                            for tweet_dict in positive_tokens_for_model]
+                            for tweet_dict in p_token_model]
 
         negative_dataset = [(tweet_dict, "Negative")
-                            for tweet_dict in negative_tokens_for_model]
+                            for tweet_dict in n_token_model]
 
         dataset = positive_dataset + negative_dataset
         random.shuffle(dataset)
@@ -61,6 +63,13 @@ class Sentiment:
         print('---')
         print(self.classifier.show_most_informative_features(10))
 
+    def check_tone(self, text):
+        text_token = remove_noise(word_tokenize(text))
+        tone = self.classifier.prob_classify(dict([token, True] for token in text_token))
+        confidence = round(tone.prob(tone.max()), 2) * 100
+        rnt = [tone.max(), confidence]
+        return rnt
+
 # ... __END Sentiment Class
 
 
@@ -72,7 +81,7 @@ def get_all_words(cleaned_tokens_list):
 
 
 # .. Shape for modeling
-def get_tweets_for_model(cleaned_tokens_list):
+def shape_tweets(cleaned_tokens_list):
     for tweet_tokens in cleaned_tokens_list:
         yield dict([token, True] for token in tweet_tokens)
 
@@ -104,6 +113,7 @@ def run():
     sentiment = Sentiment()
     print('AI Trained')
     sentiment.accuracy_test()
+    print(str(sentiment.check_tone('hey how are you i love you')))
 
 
 if __name__ == '__main__':
