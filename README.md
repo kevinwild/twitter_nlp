@@ -35,7 +35,7 @@
 - **negative_tweets** = An array of objects that show negative tweets and the probability it is considered negative
 -	**top_N_words** = multi-dimensional array with the first index being the word and the second index showing the usage count
 -	**emoji_count** = multi-dimensional array with the first index being the emoji and the second index showing the usage count
--	**emoji_count** = multi-dimensional array with the first index being the location name and the second index showing the amount of times that location was used in a tweet
+-	**user_locations** = multi-dimensional array with the first index being the location name and the second index showing the amount of times that location was used in a tweet
 
 `
 
