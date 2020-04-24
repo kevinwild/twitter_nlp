@@ -29,6 +29,7 @@ class Sentiment:
         self.train_ai()
 
     def assign_cleans(self):
+        print('Training AI...')
         print('Learning Positive Tweets')
         for tokens in twitter_samples.tokenized('positive_tweets.json'):
             self.clean_positive.append(remove_noise(tokens))
@@ -39,8 +40,8 @@ class Sentiment:
     def train_ai(self):
         all_pos_words = get_all_words(self.clean_positive)
         self.freq_dist_pos = FreqDist(all_pos_words)
-        print('10 most Popular words: ')
-        print(self.freq_dist_pos.most_common(10))
+        print('10 most Popular words from training: ')
+        print(self.freq_dist_pos.most_common(25))
         p_token_model = shape_tweets(self.clean_positive)
         n_token_model = shape_tweets(self.clean_negative)
         positive_dataset = [(tweet_dict, "Positive")
@@ -61,13 +62,13 @@ class Sentiment:
         print('Accuracy is:')
         print(classify.accuracy(self.classifier, self.test_data))
         print('---')
-        print(self.classifier.show_most_informative_features(10))
+        print(self.classifier.show_most_informative_features(25))
 
     def check_tone(self, text):
         text_token = remove_noise(word_tokenize(text))
         tone = self.classifier.prob_classify(dict([token, True] for token in text_token))
-        confidence = round(tone.prob(tone.max()), 2) * 100
-        rnt = [tone.max(), confidence]
+        confidence = tone.prob(tone.max()) * 100
+        rnt = [tone.max(), round(confidence, 2)]
         return rnt
 
 # ... __END Sentiment Class
@@ -113,7 +114,6 @@ def run():
     sentiment = Sentiment()
     print('AI Trained')
     sentiment.accuracy_test()
-    print(str(sentiment.check_tone('hey how are you i love you')))
 
 
 if __name__ == '__main__':

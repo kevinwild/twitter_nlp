@@ -2,39 +2,65 @@ import json
 import nltk
 import settings
 from collections import Counter
+from collections import OrderedDict
+
 import emoji
 from os import path
-# .. import NLTK modules
 from nltk.corpus import stopwords
 from nltk.tokenize import TweetTokenizer
-from nltk.tag import pos_tag
-from nltk.stem.wordnet import WordNetLemmatizer
-from nltk.corpus import twitter_samples  # .. Used to train AI for sentiment test
-from nltk import FreqDist, classify, NaiveBayesClassifier
-import sys
+import sentiment
 
 
 class AnalyzeData:
     def __init__(self):
         self.file = None
-        self.report = None
+        self.report = {'total_tweets': 0, 'positive_count': 0, 'negative_count': 0,
+                       'total_certain_positive': 0, 'total_certain_negative': 0,'positive_tweets': [],
+                       'negative_tweets': []}
         self.stop_words = set(stopwords.words("english"))
-        self.stop_punc = ['@', ':', 'http', 'https', '.', '!', '#', '%', ',', '?', '>', '<', '-', '&', ';']
+        self.stop_punc = ['@', ':', 'http', 'https', '.', '!', '#', '%', ',', '?', '>', '<', '-', '&', ';', '?', '\''
+                          '...', '\u2026', '\\', '\u2019', '\"', "'", '...', '\ufe0f', '\u201c', '(', '*', ')', '\u200d']
         self.word_count = {}
         self.emoji_count = {}
+        self.strong_positive = {}
+        self.strong_negative = {}
+        self.twitter_tone_count = {}
+        self.user_locations = {}
         self.base_path = settings.CONFIG.get('data_store_dir') + '/'
+        self.sentiment = sentiment.Sentiment()
 
     #  .. orchestrate report actions
     def generate_report(self):
         # ..Loop through each tweet
         for tweet in self.file:
-            # .. Tokenize tweet for evaluation
-            tokenized_text = self.tokenize(tweet['text'])
+            self.report['total_tweets'] += 1
+            # .. User location handle
+            self.handle_user_locations(tweet['userLocation'])
+            # .. Build Word Count and Emoji Count
+            self.tokenize(tweet['text'])
+            # .. Analyze tweet tone
+            tone = sentiment.Sentiment.check_tone(self.sentiment, tweet['text'])
+            # .. Check tone against confidence limit
+            if tone[1] >= settings.CONFIG.get('confidence_level'):
+                if tone[0] == 'Positive':
+                    self.report['positive_count'] += 1
+                    if tone[1] >= settings.CONFIG.get('tweet_save_limit'):
+                        self.report['total_certain_positive'] += 1
+                        self.report['positive_tweets'].append(return_tweet_format(tone, tweet['text']))
+                else:
+                    self.report['negative_count'] += 1
+                    if tone[1] >= settings.CONFIG.get('tweet_save_limit'):
+                        self.report['total_certain_negative'] += 1
+                        self.report['negative_tweets'].append(return_tweet_format(tone, tweet['text']))
 
-        # .. Compile report
-        print(self.emoji_count)
-        self.report = self.word_count
-        #self.write_file()
+        # .. Final processing
+        k = Counter(self.word_count)
+        top_word_limit = settings.CONFIG.get('top_word_limit')
+        self.report['top_'+str(top_word_limit)+'_words'] = k.most_common(top_word_limit)
+        self.report['emoji_count'] = sorted(self.emoji_count.items(), key=lambda pair: pair[1], reverse=True)
+        self.report['user_locations'] = sorted(self.user_locations.items(), key=lambda pair: pair[1], reverse=True)
+        # .. Write report
+        self.write_file()
 
     #  .. Load & return json file
     def load_file(self):
@@ -60,12 +86,12 @@ class AnalyzeData:
         # .. split text into tokens
         tweet_tokenizer = TweetTokenizer(preserve_case=False, strip_handles=True, reduce_len=True)
         tokens = tweet_tokenizer.tokenize(text)
-        print(text)
-        sys.exit()
         # .. remove stop words from tokens
-        tokens = [w for w in tokens if not w in self.stop_words or w in self.stop_punc]
+        tokens = [w for w in tokens if (not w in self.stop_words)]
         # .. loop through existing tokens
         for word in tokens:
+            if word in self.stop_punc:
+                continue
             # .. Add to word count
             if word not in self.word_count:
                 self.word_count[word] = 1
@@ -75,6 +101,18 @@ class AnalyzeData:
             self.check_emojis(word)
 
         return tokens
+
+    def handle_user_locations(self, geo):
+        if geo in self.user_locations:
+            self.user_locations[geo] += 1
+        else:
+            self.user_locations[geo] = 1
+    # .. END .. AnalyzeData Class
+
+
+# .. Format tweet for report json
+def return_tweet_format(tone, text):
+    return {'confidence': tone[1], 'tweet': text}
 
 
 # .. Download dependent data for AI
@@ -94,10 +132,6 @@ def download_dependencies():
         # .. write file to directory to prove installation completion
         with open('.downloaded', 'w') as f:
             f.write('downloaded')
-
-
-def train_ai():
-    pass
 
 
 # .. File orchestrator
