@@ -121,6 +121,8 @@ def download_dependencies():
         print('Dependencies Downloaded')
         return
     else:
+        # .. download twitter samples
+        nltk.download('twitter_samples')
         # .. list of un important words to be removed
         nltk.download('stopwords')
         # .. tokenizer divides a text into a list of sentences
