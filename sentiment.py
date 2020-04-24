@@ -40,8 +40,9 @@ class Sentiment:
     def train_ai(self):
         all_pos_words = get_all_words(self.clean_positive)
         self.freq_dist_pos = FreqDist(all_pos_words)
-        print('10 most Popular words from training: ')
-        print(self.freq_dist_pos.most_common(25))
+        top_n_words = 25
+        print(str(top_n_words) + ' most Popular words from training: ')
+        print(self.freq_dist_pos.most_common(top_n_words))
         p_token_model = shape_tweets(self.clean_positive)
         n_token_model = shape_tweets(self.clean_negative)
         positive_dataset = [(tweet_dict, "Positive")
