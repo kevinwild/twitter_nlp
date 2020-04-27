@@ -28,11 +28,12 @@ class AnalyzeData:
         self.user_locations = {}
         self.base_path = settings.CONFIG.get('data_store_dir') + '/'
         self.sentiment = sentiment.Sentiment()
-
+        self.all_tweets = ''
     #  .. orchestrate report actions
     def generate_report(self):
         # ..Loop through each tweet
         for tweet in self.file:
+            self.all_tweets += tweet['text'] + ' '
             self.report['total_tweets'] += 1
             # .. User location handle
             self.handle_user_locations(tweet['userLocation'])
@@ -71,6 +72,8 @@ class AnalyzeData:
     def write_file(self):
         with open(self.base_path + settings.CONFIG.get('report_file_name'), 'w') as f:
             json.dump(self.report, f)
+        with open(self.base_path + 'word_cloud.txt', 'w') as f:
+            json.dump(self.all_tweets, f)
 
     # .. Loop through teach character for unicode
     def check_emojis(self, text):
