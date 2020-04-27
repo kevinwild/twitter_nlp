@@ -1,0 +1,14 @@
+body {
+    background-color: #e0e0e0;
+}
+.container-fluid {
+    margin-top: 35px;
+}
+.large_num {
+    font-size: 2em;
+    margin-left: 25px;
+}
+.row {
+    margin-top: 25px;
+}
+

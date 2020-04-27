@@ -17,7 +17,8 @@
       - **confidence_level** = the level of  probability confidence that the AI has chosen the right tone for the tweet. If the tweets confidence number is lower then this number it will not be considered a valid tweet for the sentiment analysis  
       - **tweet_save_limit** = the confidence level of tweets that should be added to the final report.   
       - **top_word_limit** = the number of most frequent words used throughout the data set.  
-      - **search_url** = the main search URL,  other URLs must have similar return json shape.  
+      - **search_url** = the main search URL,  other URLs must have similar return json shape.
+      - **python_shell_cmd**" = the command you use to run python scripts in your terminal
       - **query_params** = list of query parameters used for each API request. [Full list found here](https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets)    
        or [more info here](https://developer.twitter.com/en/docs/tweets/search/guides/standard-operators)
 5. **Run the entire program or only a section. The program overwrites their output file and `analyze_data.py` always has to be ran after `request_api.py`**  

@@ -56,7 +56,7 @@ class AnalyzeData:
         # .. Final processing
         k = Counter(self.word_count)
         top_word_limit = settings.CONFIG.get('top_word_limit')
-        self.report['top_'+str(top_word_limit)+'_words'] = k.most_common(top_word_limit)
+        self.report['top_words'] = k.most_common(top_word_limit)
         self.report['emoji_count'] = sorted(self.emoji_count.items(), key=lambda pair: pair[1], reverse=True)
         self.report['user_locations'] = sorted(self.user_locations.items(), key=lambda pair: pair[1], reverse=True)
         # .. Write report
