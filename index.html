@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="view/css/main.css">
+    <link rel="stylesheet" href="view/css/datatables.min.css">
+    <title>Twitter Report</title>
+</head>
+<body>
+
+<div class="container-fluid">
+    <h1>Twitter Analysis</h1>
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Total Tweets:<span class="large_num" id="total_tweets"></span></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Config Confidence Level: <span class="large_num" id="conf_level"></span>%</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Config Confidence save Tweets: <span class="large_num" id="conf_save_level"></span>%</h3>
+                </div>
+            </div>
+        </div>
+    </div><!-- end row -->
+    <hr>
+    <div class="row">
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="posNegPie" width="350" height="350"></canvas>
+                    <hr>
+                    <p>Total Positive Tweet: <span id="pos_tweet_cnt"></span></p>
+                    <p>Total Negative Tweet: <span id="neg_tweet_cnt"></span></p>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <h4>Top <span id="top_word_limit"></span> words: </h4>
+
+            <div class="card">
+                <div class="card-body">
+                    <table id="wordCount" class="display" style="width:100%">
+                    </table>
+
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-3">
+            <h4>Emoji Count: </h4>
+
+            <div class="card">
+                <div class="card-body">
+
+                    <table id="emojiCount" class="display" style="width:100%">
+                    </table>
+
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-3">
+            <h4>Geo Locations: </h4>
+
+            <div class="card">
+                <div class="card-body">
+
+                    <table id="geoCount" class="display" style="width:100%">
+                    </table>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div><!-- end row -->
+    <hr>
+    <div class="row">
+        <div class="col-6">
+            <h4><span id="savedPosTotal"></span> Saved Positive Tweets: </h4>
+
+            <div class="card">
+                <div class="card-body">
+                    <table id="savedPosTweets" class="display" style="width:100%">
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <h4><span id="savedNegTotal"></span> Saved Negative Tweets: </h4>
+
+            <div class="card">
+                <div class="card-body">
+                    <table id="savedNegTweets" class="display" style="width:100%">
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script
+        src="https://code.jquery.com/jquery-3.5.0.min.js"
+        integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+<script src="view/js/datatables.min.js"></script>
+
+
+<script src="view/js/Chart.bundle.min.js"></script>
+<script src="view/js/report.js"></script>
+</body>
+</html>
