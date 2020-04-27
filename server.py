@@ -1,4 +1,4 @@
-if __name__ == '__main__':
+def run():
     import os
     import settings
 
@@ -19,3 +19,7 @@ if __name__ == '__main__':
     print(border)
 
     os.system(command)
+
+
+if __name__ == '__main__':
+    run()

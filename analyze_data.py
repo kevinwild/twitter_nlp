@@ -9,6 +9,7 @@ from os import path
 from nltk.corpus import stopwords
 from nltk.tokenize import TweetTokenizer
 import sentiment
+import server
 
 
 class AnalyzeData:
@@ -143,6 +144,7 @@ def run():
     ad = AnalyzeData()
     ad.load_file()
     ad.generate_report()
+    server.run()
 
 
 if __name__ == '__main__':
